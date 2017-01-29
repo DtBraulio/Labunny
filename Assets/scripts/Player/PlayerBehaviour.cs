@@ -29,6 +29,7 @@ public class PlayerBehaviour : MonoBehaviour {
     public LayerMask wallMask;
     public Vector3 wallSize;
     public bool isTouchingWall;
+    public bool isRight;
 
 
     [Header("EXTRAS")]
@@ -40,7 +41,8 @@ public class PlayerBehaviour : MonoBehaviour {
     private bool gameOver;
 
     [Header("Animation")]
-    public Animator animPlayer;
+    public Animator animMov;
+    public Animator animAtck;
     public Transform graphics;
 
 
@@ -97,6 +99,9 @@ public class PlayerBehaviour : MonoBehaviour {
 
         Jump();
 
+        Attack();
+
+
 
     }
 
@@ -136,6 +141,8 @@ public class PlayerBehaviour : MonoBehaviour {
                 break;
         }
 
+        CorrectionSpeedTouchingWall();
+
         //APLICACAMOS LA VELOCIDAD
         rbPlayer.velocity = new Vector3(currentSpeed, rbPlayer.velocity.y, rbPlayer.velocity.z);
     }
@@ -158,6 +165,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
         currentSpeed = (speedWalk * horizontalAxis);
 
+
         //LO ENVIAMOS AL ACCELERATION
         if ((horizontalAxis >= limitAxisToAccelerate) || (horizontalAxis <= -limitAxisToAccelerate)) statesMovement = 2;
         else if (horizontalAxis == 0) statesMovement = 0;
@@ -167,7 +175,7 @@ public class PlayerBehaviour : MonoBehaviour {
     {
         //COMPROVAMOS IZQ O DER
 
-        if (horizontalAxis > 0)// DER
+        if (isRight)// DER
         {
             Debug.Log("ACC DER");
 
@@ -191,7 +199,7 @@ public class PlayerBehaviour : MonoBehaviour {
             }
 
         }
-        else if (horizontalAxis < 0)//IZQ
+        else if (!isRight)//IZQ
         {
 
             Debug.Log("ACC IZQ");
@@ -279,7 +287,7 @@ public class PlayerBehaviour : MonoBehaviour {
                 statesMovement = 0;
             }
 
-            animPlayer.Play("PlantNTurnRight180");
+            animMov.Play("PlantNTurnRight180");
 
         }
         else if (currentSpeed < 0)//IZQ
@@ -357,6 +365,26 @@ public class PlayerBehaviour : MonoBehaviour {
 
         }
 
+    private void CorrectionSpeedTouchingWall()
+    {
+        if( isTouchingWall)
+        {
+            if(isRight && horizontalAxis > 0)
+            {
+                currentSpeed = 0;
+                horizontalAxis = 0;
+                statesMovement = 0;
+
+            }
+            else if(!isRight && horizontalAxis < 0)
+            {
+                currentSpeed = 0;
+                horizontalAxis = 0;
+                statesMovement = 0;
+            }
+        }
+    }
+
     private void ResetJump()
     {
         airTime = 0;
@@ -424,9 +452,31 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private void Flip()
     {
-        if (horizontalAxis > 0) graphics.localScale = new Vector3(1, graphics.localScale.y, graphics.localScale.z);
+        if (horizontalAxis > 0)
+        {
+            graphics.localScale = new Vector3(1, graphics.localScale.y, graphics.localScale.z);
+            isRight = true;
+        }
+        else if (horizontalAxis < 0)
+        {
+            graphics.localScale = new Vector3(-1, graphics.localScale.y, graphics.localScale.z);
+            isRight = false;
+        }
+    }
 
-        else if (horizontalAxis < 0) graphics.localScale = new Vector3(-1, graphics.localScale.y, graphics.localScale.z);
+    private void Attack()
+    {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            Debug.Log("ATTACK");
+            /*int crntLayerIndex = animAtck.GetLayerIndex
+            if (animAtck.GetCurrentAnimatorStateInfo())*/
+
+            //if(animAtck.)
+            //TODO ATTACK TRIGGER
+
+            animAtck.SetTrigger("Attack");
+        }
     }
 
 
@@ -464,7 +514,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private void Locomotion()
     {
-        animPlayer.SetFloat("Speed", currentSpeed);
+        animMov.SetFloat("Speed", currentSpeed);
 
     }
 

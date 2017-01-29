@@ -520,14 +520,14 @@ PlayerSettings:
   cloudServicesEnabled:
     Analytics: 0
     Build: 0
-    Collab: 0
+    Collab: 1
     ErrorHub: 0
     Game_Performance: 0
     Hub: 0
     Purchasing: 0
     UNet: 0
     Unity_Ads: 0
-  cloudProjectId: 
-  projectName: 
-  organizationId: 
+  cloudProjectId: 1a0dd151-0640-436c-92b9-bb94b7f0583b
+  projectName: playground
+  organizationId: drbraulio
   cloudEnabled: 0
